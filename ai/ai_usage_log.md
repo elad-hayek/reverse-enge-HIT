@@ -7,7 +7,7 @@
 ## Tool Disclosure
 
 - **Tool:** OpenAI Codex, GPT-5 family coding agent.
-- **Use date:** 6 June 2026.
+- **Use dates:** 6-7 June 2026.
 - **Purpose:** syllabus extraction, source discovery, report structuring,
   citation mapping, and consistency checks.
 - **Human responsibility:** the student must verify every claim, citation,
@@ -36,6 +36,19 @@ The attached `instructions.md` supplied the detailed topic and layout matrix.
 The Markdown syllabus replacement and the cleaner `misma_assignment.md`
 extraction were used to distinguish mandatory and optional sections.
 
+**[TRACKING: user prompt 3]**
+
+### Prompt 3
+
+> i am doing this project in a group we are going to be a team of 2. please
+> fix and complete all the missing parts you identified. search the assingment
+> md files for how am is suppose to deliver this (the structure of the zip
+> file). at the end give me a report of what you did and what i need to do
+> next to complete this assignment. you can igone the
+> reverse_engineering_report.docx file. focus on the
+> reverse_engineering_report.md file and the additional resouces files ones it
+> is complete i will convert it to a docx file myself.
+
 **[TRACKING: instructions.md Step 6 operational sequence]**
 
 ## Operational Sequence
@@ -55,6 +68,13 @@ extraction were used to distinguish mandatory and optional sections.
 8. Created local visual placeholders and a source-preservation checklist.
 9. Ran structural checks for tracking tags, mandatory headings, image links,
    bibliography IDs, and optional-section omission.
+10. Rechecked the full syllabus for requirements that were absent from the
+    generated `instructions.md` summary.
+11. Added the mandatory Q17-Q19, Q23, and Q30-Q33 briefings.
+12. Added Task 2 Part B because the permission to choose between Parts A and B
+    applies to solo submitters, while this project is a two-person submission.
+13. Documented the email, Word-document, article-PDF, and ZIP/RAR packaging
+    requirements in `submission_checklist.md`.
 
 **[TRACKING: instructions.md Step 6 human verification and corrections]**
 

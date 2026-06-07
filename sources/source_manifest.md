@@ -2,7 +2,8 @@
 
 # Source Manifest
 
-All sources were accessed or rechecked on **6 June 2026**. Save a lawful PDF
+Sources S1-S34 were accessed or rechecked on **6 June 2026**; sources S35-S45
+were checked on **7 June 2026**. Save a lawful PDF
 print or complete scrolling screenshot of each relevant page before submission.
 
 **[TRACKING: SOURCE S1; TrickBot architecture]**
@@ -175,6 +176,61 @@ print or complete scrolling screenshot of each relevant page before submission.
 **S34.** ytisf. “theZoo: Source/Original.”  
 <https://github.com/ytisf/theZoo/tree/master/malware/Source/Original>
 
+**[TRACKING: SOURCE S35; APT41 campaign example]**
+
+**S35.** MITRE ATT&CK. “C0017.”
+<https://attack.mitre.org/campaigns/C0017/>
+
+**[TRACKING: SOURCE S36; Windows anti-debug API]**
+
+**S36.** Microsoft Learn. “IsDebuggerPresent function (debugapi.h).”
+<https://learn.microsoft.com/en-us/windows/win32/api/debugapi/nf-debugapi-isdebuggerpresent>
+
+**[TRACKING: SOURCE S37; debugger evasion technique]**
+
+**S37.** MITRE ATT&CK. “Debugger Evasion (T1622).”
+<https://attack.mitre.org/techniques/T1622/>
+
+**[TRACKING: SOURCE S38; UAC bypass]**
+
+**S38.** MITRE ATT&CK. “Bypass User Account Control (T1548.002).”
+<https://attack.mitre.org/techniques/T1548/002/>
+
+**[TRACKING: SOURCE S39; named fileless malware example]**
+
+**S39.** Microsoft Security Blog. “Kovter becomes almost fileless, creates a new file type, and gets some new certificates.” 22 July 2016.
+<https://www.microsoft.com/en-us/security/blog/2016/07/22/kovter-becomes-almost-file-less-creates-a-new-file-type-and-gets-some-new-certificates/>
+
+**[TRACKING: SOURCE S40; scheduled-task persistence]**
+
+**S40.** MITRE ATT&CK. “Scheduled Task/Job: Scheduled Task (T1053.005).”
+<https://attack.mitre.org/techniques/T1053/005/>
+
+**[TRACKING: SOURCE S41; SMB lateral movement]**
+
+**S41.** MITRE ATT&CK. “Remote Services: SMB/Windows Admin Shares (T1021.002).”
+<https://attack.mitre.org/techniques/T1021/002/>
+
+**[TRACKING: SOURCE S42; C2-channel exfiltration]**
+
+**S42.** MITRE ATT&CK. “Exfiltration Over C2 Channel (T1041).”
+<https://attack.mitre.org/techniques/T1041/>
+
+**[TRACKING: SOURCE S43; Stagefright CVE record and POC reference]**
+
+**S43.** NIST National Vulnerability Database. “CVE-2015-1538.”
+<https://nvd.nist.gov/vuln/detail/CVE-2015-1538>
+
+**[TRACKING: SOURCE S44; Android vendor bulletin]**
+
+**S44.** Android Open Source Project. “Nexus Security Bulletin—August 2015.” 13 August 2015.
+<https://source.android.com/docs/security/bulletin/2015-08-01>
+
+**[TRACKING: SOURCE S45; Stagefright public POC source]**
+
+**S45.** OffSec Exploit Database. “Android libstagefright MP4 tx3g Atom Integer Overflow.” EDB-ID 38124.
+<https://www.exploit-db.com/exploits/38124/>
+
 **[TRACKING: source verification checklist]**
 
 ## Preservation Checklist
@@ -185,3 +241,4 @@ print or complete scrolling screenshot of each relevant page before submission.
 | S11-S20 | [ ] | [x] | [x] |
 | S21-S30 | [ ] | [x] | [x] |
 | S31-S34 | [ ] | [x] | [x] |
+| S35-S45 | [ ] | [x] | [x] |

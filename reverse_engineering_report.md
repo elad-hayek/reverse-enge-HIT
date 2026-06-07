@@ -2,7 +2,8 @@
 
 | Full Name (Hebrew) | Full Name (English) | ID Number (ת"ז) | Email Address | Phone Number | Lecture Group (Day/Hour) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| [Insert Name] | [Insert Name] | [Insert ID] | [Insert Email] | [Insert Phone] | [Insert Group] |
+| [Student 1 - Hebrew Name] | [Student 1 - English Name] | [Student 1 ID] | [Student 1 Email] | [Student 1 Phone] | [Student 1 Group] |
+| [Student 2 - Hebrew Name] | [Student 2 - English Name] | [Student 2 ID] | [Student 2 Email] | [Student 2 Phone] | [Student 2 Group] |
 
 **[TRACKING: instructions.md report title; syllabus Tasks 1 and 2]**
 
@@ -10,7 +11,7 @@
 
 **TrickBot Modular Malware, Independent Technical Briefings, and Conti Leaked Source-Code Evaluation**
 
-> **Research date:** 6 June 2026  
+> **Research dates:** 6-7 June 2026
 > **Scope rule:** Sections explicitly marked optional in the syllabus are omitted.  
 > **Safety rule:** This report describes architecture and defensive implications. It does not reproduce deployable malware, exploit code, or operational instructions.
 
@@ -53,6 +54,23 @@ reported more than 20 modules active across TrickBot's lifetime [S2][S3].
 module-fetch behavior, memory execution, process injection, scheduled-task
 persistence, and the behavior of each downloaded module. A signature for one
 module cannot represent the full TrickBot platform.
+
+**[TRACKING: syllabus Task 1 critical-reading requirement]**
+
+### Source Comparison and Research Quality
+
+The TrickBot sources describe different generations and should not be treated
+as interchangeable. Malwarebytes' 2016 report [S6] is useful as an early view
+of the emerging family and its configuration cryptography. The 2018
+Malwarebytes, Palo Alto, and F5 reports [S4][S5][S8] document intermediate
+delivery, obfuscation, and propagation changes. Microsoft's 2020 anatomy [S1]
+provides the clearest end-to-end loader and execution-chain overview.
+Kaspersky's 2021 module catalogue [S2] is the most detailed source in this
+report for comparing individual plug-ins, while Check Point's 2022 report [S3]
+is a later view of the platform's continued module evolution. The reports
+therefore complement one another: early sources establish lineage, detailed
+technical sources explain mechanisms, and later sources show which components
+changed over time.
 
 **[TRACKING: instructions.md Step 2, Infection Chain; syllabus Task 1 internal-mechanism requirement]**
 
@@ -253,6 +271,13 @@ The distinction matters: commodity tools do not uniquely identify APT41.
 Attribution depends on infrastructure, victimology, timing, certificates,
 malware lineage, and TTP combinations.
 
+**Notable campaign:** MITRE's C0017 record describes an APT41 campaign from May
+2021 through February 2022 that compromised at least six U.S. state-government
+networks through vulnerable public-facing applications. Reported activity
+included rapid adoption of public vulnerabilities, web shells, credential
+access, staging, and exfiltration of personally identifiable information
+[S35].
+
 ---
 
 **[TRACKING: instructions.md Step 3 Q14; syllabus p.4 Q14]**
@@ -313,6 +338,58 @@ needed because an old signed driver can be carried independently.
 
 ---
 
+**[TRACKING: syllabus p.5 Q17; defensive mechanism]**
+
+## Q17 - Defensive Mechanism: Process Spawn Analysis
+
+Process Spawn Analysis is a defensive mechanism under MITRE D3FEND's Detect
+pillar. It compares process-creation attributes such as parent and child image,
+command line, user, integrity level, path, and signer to identify execution
+that does not fit the host's expected behavior [S13].
+
+A practical implementation should collect complete process-creation telemetry,
+normalize command lines, and alert on rare parent-child relationships,
+executables launched from user-writable directories, and trusted filenames
+running from unexpected paths. This section intentionally overlaps Q12 because
+the syllabus specifically emphasizes Process Analysis for Q17.
+
+---
+
+**[TRACKING: syllabus p.5 Q18; anti-debugging mechanism]**
+
+## Q18 - Anti-Debugging Technique: IsDebuggerPresent
+
+Windows exposes `IsDebuggerPresent`, which returns a nonzero value when the
+calling process is running under a user-mode debugger [S36]. Malware can call
+this API early and then exit, delay, suppress payload deployment, or execute a
+decoy path when analysis is detected. MITRE classifies this behavior under
+Debugger Evasion (T1622), alongside checks of the Process Environment Block,
+hardware breakpoints, timing differences, and exception behavior [S37].
+
+This check is easy for an analyst to recognize and bypass, so it should be
+treated as an evasion signal rather than a strong security boundary.
+
+---
+
+**[TRACKING: syllabus p.5 Q19; privilege-escalation mechanism]**
+
+## Q19 - Privilege Escalation: UAC Bypass
+
+MITRE ATT&CK defines Bypass User Account Control as T1548.002. UAC normally
+mediates elevation from a lower-integrity process to administrator privileges,
+but some trusted Windows components and auto-elevated COM objects have been
+abused to start attacker-controlled code without the expected consent prompt
+[S38].
+
+The technique normally requires that the compromised user already belongs to
+the local Administrators group; it bypasses the UAC prompt rather than creating
+administrator rights from nothing. Defensive controls include removing
+unnecessary local-administrator membership, using the highest practical UAC
+enforcement level, patching Windows, and correlating registry changes with
+unexpected launches of auto-elevated binaries.
+
+---
+
 **[TRACKING: instructions.md Step 3 Supply Chain; syllabus p.5 Q24; instructions label Q20]**
 
 ## Q24 (Instructions: Q20) - XZ Utils Supply-Chain Backdoor
@@ -343,6 +420,12 @@ before broad inclusion in stable enterprise distributions, sharply limiting
 real-world deployment. The potential impact was nevertheless severe because xz
 is a transitive dependency in widely deployed Linux software.
 
+No authoritative source provides a reliable count of compromised organizations
+or computers. The defensible answer is therefore that malicious packages
+entered several development/testing distribution channels, but discovery
+preceded broad stable-enterprise rollout and prevented a measurable
+SolarWinds-scale victim population.
+
 ---
 
 **[TRACKING: instructions.md Step 3 RAT briefing; syllabus p.5 Q21]**
@@ -368,30 +451,58 @@ the operator visual and contextual awareness. These features make Remcos both a
 legitimate dual-use administration product and a high-risk post-compromise
 tool when deployed without authorization.
 
+MITRE records operational use by LazyScripter, Gamaredon Group, APT-C-36
+(Blind Eagle), and Gorgon Group, as well as use during Operation Spalax [S21].
+
 ---
 
 **[TRACKING: instructions.md Step 3 fileless briefing; syllabus p.5 Q22]**
 
-## Q22 - Fileless Malware Execution
+## Q22 - Fileless Malware Example: Kovter
 
 “Fileless” describes an execution technique, not an absence of all artifacts.
-Attackers use trusted interpreters and memory-resident loading so the principal
-payload does not need to exist as a conventional executable on disk.
+Attackers use trusted interpreters, registry-resident content, and
+memory-resident loading so the principal payload does not need to exist as a
+conventional executable on disk.
 
-**Typical flow**
+**Named example:** Microsoft documented Kovter as an almost-fileless
+click-fraud Trojan in July 2016. Most malicious code was stored in the Windows
+registry. A randomly assigned file extension and shell-open handler ultimately
+invoked `mshta`; startup shortcuts or a Run-key-launched batch file triggered
+that registered handler [S39].
 
-1. A macro, command line, WMI event, registry value, or network response holds
-   an encoded script or payload.
-2. PowerShell, WMI, JavaScript/VBScript, or a .NET runtime decodes the content.
-3. The runtime allocates memory and executes script, shellcode, or a reflectively
-   loaded module.
-4. Persistence may remain in WMI or the registry rather than a normal executable
-   path.
+**Technique and campaign context**
 
-Microsoft notes that PowerShell and WMI can load scripts directly in memory and
-that reflective DLL loading can execute a library without normal disk-backed
-module loading [S22][S23]. Evidence still exists in process, script-block,
-AMSI, WMI, registry, memory, and network telemetry.
+- The important system interpreter is `mshta.exe`, launched through a malicious
+  shell-open association.
+- Persistence data and most code remain in registry values, while small
+  shortcut, batch, or nonstandard-extension files act as triggers.
+- Microsoft tied the analyzed generation to malvertising campaigns and noted
+  that complete remediation required removing both the registry content and
+  the trigger files [S39].
+
+More generally, PowerShell, WMI, and reflective DLL loading can execute content
+without normal disk-backed module loading [S22][S23]. Evidence still exists in
+process, script-block, AMSI, registry, memory, and network telemetry.
+
+---
+
+**[TRACKING: syllabus p.5 Q23; WebInject malware]**
+
+## Q23 - WebInject Malware Example: TrickBot
+
+TrickBot is a documented WebInject malware family. Its `injectDll` and related
+web-inject components intercept browser activity and alter or observe selected
+financial sessions according to downloaded targeting rules [S2]. Later
+variants also hooked certificate-chain validation functions so locally
+generated certificates could support interception without ordinary browser
+certificate errors [S2].
+
+WebInject should not be reduced to changing a webpage's appearance. It operates
+inside or alongside the browser's transaction path, where it can capture form
+data, insert attacker-controlled fields, redirect requests, or manipulate what
+the victim sees while preserving the appearance of a legitimate banking
+session.
 
 ---
 
@@ -509,6 +620,71 @@ reverse engineering.
 
 ---
 
+**[TRACKING: syllabus p.6 Q30; persistence technique]**
+
+## Q30 - Persistence Technique: Windows Scheduled Task
+
+Windows Scheduled Task abuse is MITRE ATT&CK T1053.005. An attacker can register
+a task that starts a payload at logon, startup, a fixed time, or a recurring
+interval. Tasks can also run under another security context such as `SYSTEM`
+when the creator has sufficient rights [S40].
+
+Defenders should monitor task creation and modification through `schtasks`,
+PowerShell, WMI, COM, and Task Scheduler files or registry data. Suspicious
+indicators include hidden tasks, misleading update names, payloads in
+user-writable directories, and task creation followed by execution from
+`taskeng.exe` or Task Scheduler's service process.
+
+---
+
+**[TRACKING: syllabus p.6 Q31; local privilege escalation technique]**
+
+## Q31 - Local Privilege Escalation: UAC Bypass
+
+A specific local privilege-escalation technique is UAC bypass (T1548.002).
+Malware running for a user who is already a local administrator may abuse an
+auto-elevated Windows component, COM interface, or trusted registry lookup to
+start attacker-controlled code at high integrity without the normal consent
+dialog [S38].
+
+The prerequisite matters: UAC bypass commonly changes the integrity level of an
+administrator's process; it does not automatically turn a standard user into an
+administrator. Monitoring should correlate changes to known UAC-related
+registry paths with launches of unusual auto-elevated binaries.
+
+---
+
+**[TRACKING: syllabus p.6 Q32; lateral-movement technique]**
+
+## Q32 - Lateral Movement: SMB and Windows Admin Shares
+
+MITRE ATT&CK T1021.002 covers lateral movement through SMB and Windows
+administrative shares such as `ADMIN$`, `C$`, and `IPC$`. With valid
+administrator credentials or reusable hashes, an attacker can copy tools to a
+remote system and combine SMB/RPC access with service creation, scheduled
+tasks, WMI, or another remote-execution mechanism [S41].
+
+Defensive priorities are limiting local-administrator reuse, disabling SMBv1,
+segmenting networks, restricting administrative shares, and alerting when a
+host accesses many peer systems followed by remote service or task creation.
+
+---
+
+**[TRACKING: syllabus p.6 Q33; exfiltration technique]**
+
+## Q33 - Exfiltration: Existing Command-and-Control Channel
+
+Exfiltration Over C2 Channel is MITRE ATT&CK T1041. Instead of opening a new
+network path, malware encodes stolen files or records into the same HTTP,
+HTTPS, DNS, or custom protocol already used for command and control [S42].
+
+Reusing the channel reduces new network indicators and lets the attacker apply
+existing encryption or authentication. Defenders can look for unusual outbound
+volume, long sessions, repeated uploads after archive creation, abnormal
+request sizes, and endpoint collection activity immediately before C2 traffic.
+
+---
+
 **[TRACKING: instructions.md Step 4; syllabus Task 2 mandatory leaked-source evaluation]**
 
 ## Task 2 - Conti Ransomware Leaked Source-Code Evaluation
@@ -616,6 +792,49 @@ against the executable, runtime behavior, and independent reporting.
 **[TRACKING: instructions.md Step 4 code visual placeholder]**
 
 ![Code Snippet of Core Malware Functional Module](./images/source_code_snippet.png)
+
+---
+
+**[TRACKING: syllabus Task 2 Part B; required for a two-person team]**
+
+## Task 2B - Public Exploit/POC Source-Code Reference
+
+### Selected Vulnerability: CVE-2015-1538 (Android Stagefright)
+
+CVE-2015-1538 is an integer-overflow vulnerability in
+`SampleTable::setSampleToChunkParams` within Android's `libstagefright`.
+Malformed MP4 atom data can trigger unchecked multiplication, memory
+corruption, and potentially remote code execution in the media-processing
+context on affected Android releases before build LMY48I [S43][S44].
+
+Google’s August 2015 Nexus bulletin rated the issue Critical, listed Android
+5.1 and earlier as affected, and explained that remote content could reach the
+vulnerable media path through mechanisms including MMS, email, web browsing,
+or media playback [S44]. NVD published the CVE record on 30 September 2015 and
+links to a public high-level-language exploit/POC reference in Exploit Database
+entry 38124 [S43][S45].
+
+**POC/source reference**
+
+- Exploit Database entry:
+  <https://www.exploit-db.com/exploits/38124/> [S45]
+- This report links to the public research artifact but does not reproduce its
+  payload, shellcode, build steps, or execution instructions.
+- The assignment's own example identifies this entry as acceptable because the
+  machine-code portion is accompanied by explanatory source and analysis.
+
+**Search trail**
+
+1. `Stagefright CVE`
+2. `CVE-2015-1538 POC source code`
+3. `CVE-2015-1538 Exploit-DB 38124`
+4. Cross-check against NVD and the Android security bulletin.
+
+**Reverse-engineering value:** the public source makes the malformed media
+structure and parser assumptions easier to understand than a binary crash
+alone. Analysts must still validate architecture, Android build, mitigations,
+and exploitability against the exact target rather than assuming that an old
+POC applies unchanged.
 
 ---
 
